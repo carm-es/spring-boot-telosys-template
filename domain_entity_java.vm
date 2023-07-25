@@ -1,7 +1,8 @@
 ## --------------------------------------------------
-#if ( $entity.isJoinEntity() )
-#cancel("No JPA class for join entity")
-#end
+## --- comentado por jgg75w, sino no se genera el modelo y hay errores de compilacion. Esto se tendrá que analizar más despacio.
+##if ( $entity.isJoinEntity() )
+##cancel("No JPA class for join entity")
+##end
 ## --------------------------------------------------
 #checkId($entity)
 ##---------------------------------------------------------------------------------------
@@ -27,6 +28,7 @@
 package ${target.javaPackageFromFolder(${SRC})};
 ## IF ENTITY HAS A COMPOSITE PRIMARY KEY => GENERATE AN 'ID CLASS' FOR THIS PRIMARY KEY
 #if ( $entity.hasCompositePrimaryKey() )
+#set ( $jpaEntityIdClass = $target.entityName.concat("Id"))
 $generator.generate($target.entityName ,  "${jpaEntityIdClass}.java", $target.folder, "domainJpaEntityId_java.vm" )
 #end
 
