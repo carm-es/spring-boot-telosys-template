@@ -37,6 +37,10 @@ import java.io.Serializable;
 import $import;
 #end
 
+#if ($entity.hasLinks())
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+#end
+
 ##--- Comentado por jgg75w
 ## Lo comento porque en la versión actual de la librería de Telosys que es la 4.0.0 el jpa no está preparado para la versión actual de java y siempre 
 ## devuelve javax.persistence.* en lugar de jakarta.persistence.*, por eso comento estas lineas y mientras sale una nueva versión de Telosys lo hacemos a mano.
@@ -59,6 +63,19 @@ $jpa.entityAnnotations(0, $entity)
 #if ( $entity.hasCompositePrimaryKey() )  
 @IdClass(${jpaEntityIdClass}.class)
 #end
+## --- by jgg75w: para que no se generen referencias ciclicas al generar los JSON de los servicios
+#if ($entity.hasLinks())
+@JsonIgnoreProperties(value= {
+#foreach( $link in $entity.links )
+#if ($foreach.count < $entity.links.size())
+"$link.fieldName", 
+#else
+"$link.fieldName"
+#end
+#end
+}) //Para evitar referencias ciclicas, si deseas que alguna salga simplemente eliminala de la lista de ignoradas
+#end
+
 public class ${entity.name} implements Serializable {
 
     private static final long serialVersionUID = 1L;
